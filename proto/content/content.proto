@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package content;
+
+option go_package = "PolyAbit.content.v1;contentv1";
+
+service Content {
+  rpc GetProfile (GetProfileRequest) returns (GetProfileResponse);
+}
+
+message GetProfileRequest {
+  int64 userID = 1;
+}
+
+message GetProfileResponse {
+  int64 user_id = 1;
+  string firstName = 2;
+  string middleName = 3;
+  string lastName = 4; 
+}
