@@ -2,19 +2,84 @@ syntax = "proto3";
 
 package content;
 
+import "google/api/annotations.proto";
+
 option go_package = "PolyAbit.content.v1;contentv1";
 
 service Content {
-  rpc GetProfile (GetProfileRequest) returns (GetProfileResponse);
+  rpc GetProfile(GetProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      get: "/profile"
+    };
+  }
+  rpc UpdateProfile(UpdateProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      put: "/profile"
+      body: "*"
+    };
+  }
+  rpc GetDirections(Empty) returns (Directions) {
+    option (google.api.http) = {
+      get: "/direction"
+    };
+  }
+  rpc CreateDirection(CreateDirectionRequest) returns (Direction) {
+    option (google.api.http) = {
+      post: "/direction",
+      body: "*"
+    };
+  }
+  rpc DeleteDirection(DeleteDirectionRequest) returns (Empty) {
+    option (google.api.http) = {
+      delete: "/direction"
+    };
+  }
+  rpc UpdateDirection(Direction) returns (Direction) {
+    option (google.api.http) = {
+      put: "/direction",
+      body: "*"
+    };
+  }
 }
 
+// Commons
+message Empty {}
+
+message Profile {
+  string firstName = 1;
+  string middleName = 2;
+  string lastName = 3; 
+}
+
+message Direction {
+  int64 id = 1;
+  string code = 2;
+  string name = 3;
+  string exams = 4;
+  string description = 5;
+}
+
+// Profile
 message GetProfileRequest {
   int64 userID = 1;
 }
 
-message GetProfileResponse {
-  int64 user_id = 1;
-  string firstName = 2;
-  string middleName = 3;
-  string lastName = 4; 
+message UpdateProfileRequest {
+  Profile profile = 1;
+}
+
+//  Directions
+message Directions {
+  repeated Direction directions = 1;
+}
+
+message DeleteDirectionRequest {
+  int64 directionId = 1;
+}
+
+message CreateDirectionRequest {
+  string code = 1;
+  string name = 2;
+  string exams = 3;
+  string description = 4;
 }

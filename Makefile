@@ -21,6 +21,17 @@ generate-auth-api:
 	--plugin=protoc-gen-grpc-gateway=bin/protoc-gen-grpc-gateway \
 	proto/auth/auth.proto
 
+generate-content-api:
+	mkdir -p gen/go/content
+	protoc --proto_path proto/content --proto_path vendor.protogen \
+	--go_out=gen/go/content --go_opt=paths=source_relative \
+	--plugin=protoc-gen-go=bin/protoc-gen-go \
+	--go-grpc_out=gen/go/content --go-grpc_opt=paths=source_relative \
+	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
+	--grpc-gateway_out=gen/go/content --grpc-gateway_opt=paths=source_relative \
+	--plugin=protoc-gen-grpc-gateway=bin/protoc-gen-grpc-gateway \
+	proto/content/content.proto
+
 vendor-proto:
 		@if [ ! -d vendor.protogen/google ]; then \
 			git clone https://github.com/googleapis/googleapis vendor.protogen/googleapis &&\
