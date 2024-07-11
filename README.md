@@ -1,11 +1,11 @@
 # protos
 
-Just use command: `task gen`
+0.0.2 release: **add gRPC gateway**
 
-Before use, install the necessary deps:
+Use "make" commands:
 
-1) `go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28`
+1) `install-deps`
+2) `get-deps`
+3) `vendor-proto`
 
-2) `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2`
-
-3) `export PATH="$PATH:$(go env GOPATH)/bin"`
+and then just `generate-${service}-api`
