@@ -12,9 +12,9 @@ service Content {
       get: "/profile"
     };
   }
-  rpc UpdateProfile(UpdateProfileRequest) returns (Profile) {
+  rpc UpdateProfile(Profile) returns (Profile) {
     option (google.api.http) = {
-      put: "/profile"
+      put: "/profile",
       body: "*"
     };
   }
@@ -23,7 +23,7 @@ service Content {
       get: "/direction"
     };
   }
-  rpc CreateDirection(CreateDirectionRequest) returns (Direction) {
+  rpc CreateDirection(CreateDirectionRequest) returns (Empty) {
     option (google.api.http) = {
       post: "/direction",
       body: "*"
@@ -34,21 +34,16 @@ service Content {
       delete: "/direction"
     };
   }
-  rpc UpdateDirection(Direction) returns (Direction) {
-    option (google.api.http) = {
-      put: "/direction",
-      body: "*"
-    };
-  }
 }
 
 // Commons
 message Empty {}
 
 message Profile {
-  string firstName = 1;
-  string middleName = 2;
-  string lastName = 3; 
+  int64 userId = 1;
+  string firstName = 2;
+  string middleName = 3;
+  string lastName = 4; 
 }
 
 message Direction {
@@ -62,10 +57,6 @@ message Direction {
 // Profile
 message GetProfileRequest {
   int64 userID = 1;
-}
-
-message UpdateProfileRequest {
-  Profile profile = 1;
 }
 
 //  Directions

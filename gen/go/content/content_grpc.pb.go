@@ -23,11 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ContentClient interface {
 	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*Profile, error)
-	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*Profile, error)
+	UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Profile, error)
 	GetDirections(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Directions, error)
-	CreateDirection(ctx context.Context, in *CreateDirectionRequest, opts ...grpc.CallOption) (*Direction, error)
+	CreateDirection(ctx context.Context, in *CreateDirectionRequest, opts ...grpc.CallOption) (*Empty, error)
 	DeleteDirection(ctx context.Context, in *DeleteDirectionRequest, opts ...grpc.CallOption) (*Empty, error)
-	UpdateDirection(ctx context.Context, in *Direction, opts ...grpc.CallOption) (*Direction, error)
 }
 
 type contentClient struct {
@@ -47,7 +46,7 @@ func (c *contentClient) GetProfile(ctx context.Context, in *GetProfileRequest, o
 	return out, nil
 }
 
-func (c *contentClient) UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*Profile, error) {
+func (c *contentClient) UpdateProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Profile, error) {
 	out := new(Profile)
 	err := c.cc.Invoke(ctx, "/content.Content/UpdateProfile", in, out, opts...)
 	if err != nil {
@@ -65,8 +64,8 @@ func (c *contentClient) GetDirections(ctx context.Context, in *Empty, opts ...gr
 	return out, nil
 }
 
-func (c *contentClient) CreateDirection(ctx context.Context, in *CreateDirectionRequest, opts ...grpc.CallOption) (*Direction, error) {
-	out := new(Direction)
+func (c *contentClient) CreateDirection(ctx context.Context, in *CreateDirectionRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/content.Content/CreateDirection", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,25 +82,15 @@ func (c *contentClient) DeleteDirection(ctx context.Context, in *DeleteDirection
 	return out, nil
 }
 
-func (c *contentClient) UpdateDirection(ctx context.Context, in *Direction, opts ...grpc.CallOption) (*Direction, error) {
-	out := new(Direction)
-	err := c.cc.Invoke(ctx, "/content.Content/UpdateDirection", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ContentServer is the server API for Content service.
 // All implementations must embed UnimplementedContentServer
 // for forward compatibility
 type ContentServer interface {
 	GetProfile(context.Context, *GetProfileRequest) (*Profile, error)
-	UpdateProfile(context.Context, *UpdateProfileRequest) (*Profile, error)
+	UpdateProfile(context.Context, *Profile) (*Profile, error)
 	GetDirections(context.Context, *Empty) (*Directions, error)
-	CreateDirection(context.Context, *CreateDirectionRequest) (*Direction, error)
+	CreateDirection(context.Context, *CreateDirectionRequest) (*Empty, error)
 	DeleteDirection(context.Context, *DeleteDirectionRequest) (*Empty, error)
-	UpdateDirection(context.Context, *Direction) (*Direction, error)
 	mustEmbedUnimplementedContentServer()
 }
 
@@ -112,20 +101,17 @@ type UnimplementedContentServer struct {
 func (UnimplementedContentServer) GetProfile(context.Context, *GetProfileRequest) (*Profile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
 }
-func (UnimplementedContentServer) UpdateProfile(context.Context, *UpdateProfileRequest) (*Profile, error) {
+func (UnimplementedContentServer) UpdateProfile(context.Context, *Profile) (*Profile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
 }
 func (UnimplementedContentServer) GetDirections(context.Context, *Empty) (*Directions, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDirections not implemented")
 }
-func (UnimplementedContentServer) CreateDirection(context.Context, *CreateDirectionRequest) (*Direction, error) {
+func (UnimplementedContentServer) CreateDirection(context.Context, *CreateDirectionRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDirection not implemented")
 }
 func (UnimplementedContentServer) DeleteDirection(context.Context, *DeleteDirectionRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDirection not implemented")
-}
-func (UnimplementedContentServer) UpdateDirection(context.Context, *Direction) (*Direction, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDirection not implemented")
 }
 func (UnimplementedContentServer) mustEmbedUnimplementedContentServer() {}
 
@@ -159,7 +145,7 @@ func _Content_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Content_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateProfileRequest)
+	in := new(Profile)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -171,7 +157,7 @@ func _Content_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/content.Content/UpdateProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServer).UpdateProfile(ctx, req.(*UpdateProfileRequest))
+		return srv.(ContentServer).UpdateProfile(ctx, req.(*Profile))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -230,24 +216,6 @@ func _Content_DeleteDirection_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Content_UpdateDirection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Direction)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServer).UpdateDirection(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content.Content/UpdateDirection",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServer).UpdateDirection(ctx, req.(*Direction))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Content_ServiceDesc is the grpc.ServiceDesc for Content service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,10 +242,6 @@ var Content_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDirection",
 			Handler:    _Content_DeleteDirection_Handler,
-		},
-		{
-			MethodName: "UpdateDirection",
-			Handler:    _Content_UpdateDirection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
