@@ -31,7 +31,7 @@ service Content {
   }
   rpc DeleteDirection(DeleteDirectionRequest) returns (Empty) {
     option (google.api.http) = {
-      delete: "/direction"
+      delete: "/direction/{directionId}"
     };
   }
 }
